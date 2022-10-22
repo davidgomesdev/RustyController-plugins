@@ -1,6 +1,6 @@
 # RustyController-plugins
 
-Little scripts that use the RustyController API to create amazing effects
+Little scripts that use the [RustyController](https://github.com/LegendL3n/RustyController) API to create amazing effects.
 
 ## Rustea
 
