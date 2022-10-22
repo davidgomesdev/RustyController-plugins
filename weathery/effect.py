@@ -1,5 +1,5 @@
 # 3 hours
-DURATION = 3 * 60 * 60
+DURATION = 3 * 60 * 60 * 1000
 
 
 def create_effect(hue, saturation=1.0, value=0.3):
