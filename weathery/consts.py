@@ -7,9 +7,9 @@ TEMP_ID_TO_HUE = {
     # Céu limpo / Clear sky
     1: EFFECT_BY_TEMP["SUNNY"],
     # Céu pouco nublado / Partly cloudy
-    2: EFFECT_BY_TEMP["CLOUDY"],
+    2: EFFECT_BY_TEMP["A_BIT_CLOUDY"],
     # Céu parcialmente nublado / Sunny intervals
-    3: EFFECT_BY_TEMP["CLOUDY"],
+    3: EFFECT_BY_TEMP["A_BIT_CLOUDY"],
     # Céu muito nublado ou encoberto / Cloudy
     4: EFFECT_BY_TEMP["CLOUDY"],
     # Céu nublado por nuvens altas / Cloudy (High cloud)
@@ -28,7 +28,7 @@ TEMP_ID_TO_HUE = {
     11: EFFECT_BY_TEMP["HEAVY_RAIN"],
     # Períodos de chuva / Intermittent rain
     12: EFFECT_BY_TEMP["RAIN"],
-    # Períodos de chuva fraca / Intermittent ligth rain
+    # Períodos de chuva fraca / Intermittent light rain
     13: EFFECT_BY_TEMP["LIGHT_RAIN"],
     # Períodos de chuva forte / Intermittent heavy rain
     14: EFFECT_BY_TEMP["HEAVY_RAIN"],
