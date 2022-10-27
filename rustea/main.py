@@ -13,47 +13,34 @@ mutation SetColor($hue: Float!, $saturation: Float!, $value: Float!) {
 }
 """
 
-# Tea Shop
-silverNeedles = {
-    "hue": 295.774,
-    "saturation": 0.256,
-    "value": 0.58
-}
-milkTea = {
-    "hue": 197.88235294117646,
-    "saturation": 0.9,
-    "value": 0.5
-}
-chocolatea = {
-    "hue": 26.352941176470587,
-    "saturation": 0.9,
-    "value": 0.5
-}
-earlGrey = {
-    "hue": 114.0,
-    "saturation": 1.0,
-    "value": 0.58
-}
 
-# Gorreana
-white = {
-    "hue": 0.0,
-    "saturation": 0.0,
-    "value": 0.68
-}
-blackPekoe = {
-    "hue": 230.0,
-    "saturation": 0.9,
-    "value": 0.59
-}
+def create(name, hue, saturation, value):
+    return {
+        "name": name,
+        "hue": hue,
+        "saturation": saturation,
+        "value": value,
+    }
+
+
+pool = [
+    # Tea Shop
+    create("silverNeedles", 308.0, 0.55, 0.5),
+    create("milkTea", 197.8, 0.75, 0.3),
+    create("chocolatea", 26.3, 0.9, 0.5),
+    ## create("earlGrey", 114.0, 1.0, 0.58),
+    # Gorreana
+    create("white", 0.0, 0.0, 0.3),
+    create("blackPekoe", 230.0, 0.9, 0.59),
+    # Tea bag
+    create("yerbaMate", 0.0, 1.0, 0.3),
+]
 
 client = GraphqlClient(endpoint="http://127.0.0.1:8080/graphql")
 
-pool = [silverNeedles, milkTea, chocolatea, earlGrey, white, blackPekoe]
-
 choice = SystemRandom().choice(pool)
 
-print('Random tea chosen!')
+print("Chose '" + choice['name'] + "'!")
 
 res = client.execute(mutation, variables=choice)
 
@@ -62,4 +49,3 @@ if "errors" in res or res['data']['setLedStatic'] != "SUCCESS":
     exit(1)
 
 print('Sent tea choice!')
-
