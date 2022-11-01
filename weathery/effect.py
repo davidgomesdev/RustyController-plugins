@@ -23,6 +23,6 @@ EFFECT_BY_TEMP = {
     "A_BIT_CLOUDY": create_effect(hue=35, value=0.05),
     "CLOUDY": create_effect(hue=195, saturation=0.067, value=0.07),
     "THUNDER": create_effect(hue=260, saturation=0.81, value=0.23),
-    "SNOW": create_effect(hue=0.0, saturation=0.0, value=0.68),
+    "SNOW": create_effect(hue=0, saturation=0.0, value=0.68),
     "SUNNY": create_effect(hue=35, value=0.17),
 }
