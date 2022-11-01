@@ -3,8 +3,9 @@ from python_graphql_client import GraphqlClient
 from random import SystemRandom
 
 mutation = """
-mutation SetColor($hue: Float!, $saturation: Float!, $value: Float!, $duration: Int!) {
+mutation SetColor($name: String!, $hue: Int!, $saturation: Float!, $value: Float!, $duration: Int!) {
     setLedStatic(input: {
+        name: $name,
         hue: $hue,
         saturation: $saturation,
         value: $value,
