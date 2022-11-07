@@ -14,7 +14,7 @@ date_formatted = wanted_date.strftime("%Y-%m-%dT00:00:00")
 
 temp_info = next(
     row
-    for row in json_data if row.get("dataPrev") == date_formatted and row.get("intervaloHora") == "13h-13h")
+    for row in json_data if row.get("dataPrev") == date_formatted and row.get("idPeriodo") == 24)
 
 if temp_info is None:
     raise KeyError("Couldn't find temperature info for tomorrow!")
