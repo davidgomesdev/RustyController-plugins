@@ -20,14 +20,13 @@ if temp_info is None:
     raise KeyError("Couldn't find temperature info for tomorrow!")
 
 temperature_id = temp_info["idTipoTempo"]
-
-print(f"Sending temperature ID '{temperature_id}' effect")
-
 effect = TEMP_ID_TO_HUE[temperature_id]
+
+print(f"Sending temperature effect '{effect['name']}' for ID '{temperature_id}'")
 
 client = GraphqlClient(endpoint="http://127.0.0.1:8080/graphql")
 
-res = client.execute(effect)
+res = client.execute(effect['mutation'])
 
 if "errors" in res or res['data']['setLedStatic'] != "SUCCESS":
     print('Err! ' + str(res))

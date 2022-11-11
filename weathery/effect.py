@@ -3,17 +3,19 @@ DURATION = 3 * 60 * 60 * 1000
 
 
 def create_effect(name, hue, saturation=1.0, value=0.2):
-    return f"""
-    mutation SetTemperatureColor {{
-      setLedStatic(input: {{
-        name: "weathery-{name}",
-        hue: {hue},
-        saturation: {saturation},
-        value: {value},
-        duration: {DURATION}
-      }})
-    }}
-    """
+    return {
+        'name': name,
+        'mutation': f"""
+            mutation SetTemperatureColor {{
+              setLedStatic(input: {{
+                name: "weathery-{name}",
+                hue: {hue},
+                saturation: {saturation},
+                value: {value},
+                duration: {DURATION}
+              }})
+            }}"""
+    }
 
 
 EFFECT_BY_TEMP = {
