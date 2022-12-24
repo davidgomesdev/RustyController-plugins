@@ -74,11 +74,8 @@ mutation SelectionNotFound {
     })
 }
 
-mutation CancelledLed {
+mutation CancelledStep {
     setLedOff
-}
-
-mutation CancelledRumble {
     setRumbleOff
 }
 """)
@@ -146,17 +143,17 @@ async def handle_key_press(session, button, state):
             brew_mode_state = BrewModeState.INACTIVE
 
         if brew_mode_state is BrewModeState.BREWED:
-            await session.execute(gql_operations, operation_name="CancelledLed")
-            await session.execute(gql_operations, operation_name="CancelledRumble")
+            await session.execute(gql_operations, operation_name="Cancelled")
 
             logger.info("Stopped brew finish")
             brew_mode_state = BrewModeState.INACTIVE
             return
 
         if brew_mode_state is BrewModeState.INITIATING:
+            await session.execute(gql_operations, operation_name="Cancelled")
+
             logger.info("Cancelled selection")
             brew_mode_state = BrewModeState.INACTIVE
-            await session.execute(gql_operations, operation_name="CancelledLed")
             return
 
         if brew_mode_state is BrewModeState.BREWING:
@@ -165,9 +162,7 @@ async def handle_key_press(session, button, state):
             return
 
         if brew_mode_state is BrewModeState.CANCELLING:
-            logger.debug('Sending cancel brewing mutation...')
-
-            await session.execute(gql_operations, operation_name="CancelledLed")
+            await session.execute(gql_operations, operation_name="Cancelled")
 
             if brew_task is not None:
                 brew_task.cancel()
