@@ -13,3 +13,13 @@ Queries [IPMA](https://www.ipma.pt/opencms/pt/index.html) for the next day's wea
 ### Brewertender
 
 Counts down the time of a tea.
+
+#### How to use
+
+Press the `Move` button twice, then one of the 4 main buttons to select the tea.
+
+It then will "brew" the tea, and at the end rumble to notify it has been brewed.
+
+Press the `Move` button again to stop it. 
+
+In any step you can press the `Move` button to cancel the process.
