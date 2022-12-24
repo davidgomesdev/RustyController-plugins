@@ -23,3 +23,7 @@ It then will "brew" the tea, and at the end rumble to notify it has been brewed.
 Press the `Move` button again to stop it. 
 
 In any step you can press the `Move` button to cancel the process.
+
+### Ruscue
+
+Press `Start` and `Select` buttons simultaneously to set led and rumble off.
