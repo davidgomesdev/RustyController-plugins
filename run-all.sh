@@ -22,8 +22,8 @@ do
   if [ -f main.py ]; then
     if [ -f .ad-hoc ]; then
       echo "Ignoring $plugin because it's an ad-hoc plugin."
-      continue
       cd "$BASE_DIR" || echo "Huh..? Failed to cd to base dir"
+      continue
     fi
 
     echo "${INFO}Running $plugin$RESET"
