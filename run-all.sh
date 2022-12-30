@@ -2,9 +2,10 @@
 
 # Colors
 
-SUCCESS=$(tput setaf 2)
 ERROR=$(tput setaf 1)
+SUCCESS=$(tput setaf 2)
 INFO=$(tput setaf 6)
+FINISH=$(tput setaf 30)
 RESET=$(tput sgr0)
 
 echo "Killing old session..."
@@ -33,7 +34,7 @@ do
     echo "Ignoring $plugin folder"
   fi
 
-  cd "$BASE_DIR" || echo "Huh..? Failed to cd to base dir"
+  cd "$BASE_DIR" || echo "${ERROR}Huh..? Failed to cd to base dir$RESET"
 done
 
-echo "${INFO}Finished RustyController plugins$RESET"
+echo "${FINISH}Finished RustyController plugins$RESET"
