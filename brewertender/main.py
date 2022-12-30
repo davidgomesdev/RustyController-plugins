@@ -143,14 +143,14 @@ async def handle_key_press(session, button, state):
             brew_mode_state = BrewModeState.INACTIVE
 
         if brew_mode_state is BrewModeState.BREWED:
-            await session.execute(gql_operations, operation_name="Cancelled")
+            await session.execute(gql_operations, operation_name="CancelledStep")
 
             logger.info("Stopped brew finish")
             brew_mode_state = BrewModeState.INACTIVE
             return
 
         if brew_mode_state is BrewModeState.INITIATING:
-            await session.execute(gql_operations, operation_name="Cancelled")
+            await session.execute(gql_operations, operation_name="CancelledStep")
 
             logger.info("Cancelled selection")
             brew_mode_state = BrewModeState.INACTIVE
@@ -162,7 +162,7 @@ async def handle_key_press(session, button, state):
             return
 
         if brew_mode_state is BrewModeState.CANCELLING:
-            await session.execute(gql_operations, operation_name="Cancelled")
+            await session.execute(gql_operations, operation_name="CancelledStep")
 
             if brew_task is not None:
                 brew_task.cancel()
