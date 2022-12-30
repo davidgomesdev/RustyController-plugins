@@ -28,7 +28,7 @@ do
     fi
 
     echo "${INFO}Running $plugin$RESET"
-    python_command="pip install -r requirements.txt; python main.py 2>&1 >> log.txt || echo \"Failed running $plugin\""
+    python_command="pip install -r requirements.txt; python main.py >> log.txt 2>&1 || echo \"Failed running $plugin\""
     tmux new-window -t "RustyController plugins" -n "$plugin" "cd $wkdir && $python_command" && echo "${SUCCESS}Success.$RESET" || echo "${ERROR}Failed!$RESET"
   else
     echo "Ignoring $plugin folder"
