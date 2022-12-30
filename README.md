@@ -2,6 +2,12 @@
 
 Little scripts that use the [RustyController](https://github.com/LegendL3n/RustyController) API to create amazing effects.
 
+The [run-all.sh](run-all.sh) script runs all plugins that are not ad-hoc.
+
+Such as [Weathery](#weathery), which is one-off plugin, intended to be run at a certain hour.
+
+The way it detects one as ad-hoc is by having a `.ad-hoc` on its directory. 
+
 ### Rustea
 
 Has a list of colors, each corresponding to a tea, and chooses a random one, allowing me to decide which one to take in the morning :9.
