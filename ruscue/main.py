@@ -6,7 +6,14 @@ import time
 from gql import gql, Client
 from gql.transport.websockets import WebsocketsTransport
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("current.log"),
+        logging.StreamHandler()
+    ]
+)
 logger = logging.getLogger("ruscue")
 logger.setLevel(logging.DEBUG)
 

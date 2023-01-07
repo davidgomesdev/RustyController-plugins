@@ -18,7 +18,14 @@ class BrewModeState(Enum):
     CANCELLING = 5
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("current.log"),
+        logging.StreamHandler()
+    ]
+)
 logger = logging.getLogger("brewertender")
 logger.setLevel(logging.DEBUG)
 
