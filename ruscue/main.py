@@ -7,7 +7,7 @@ from gql import gql, Client
 from gql.transport.websockets import WebsocketsTransport
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
         logging.FileHandler("current.log"),
