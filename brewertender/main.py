@@ -120,7 +120,7 @@ async def brew_tea(session, chosen_tea):
         logger.info("Brew task cancelled.")
         return
 
-    logger.info("Finished brew")
+    logger.info("Finished brew for '" + chosen_tea['name'] + "' tea")
     await session.execute(gql_operations, operation_name="BrewFinished")
     brew_mode_state = BrewModeState.BREWED
     brew_task = None
@@ -201,7 +201,7 @@ async def handle_key_press(session, button, state):
             brew_mode_state = BrewModeState.INACTIVE
             return
 
-        logger.info("Starting brew task")
+        logger.info("Starting brew task for '" + chosen_tea['name'] + "' tea")
         brew_task = asyncio.create_task(brew_tea(session, chosen_tea))
         brew_mode_state = BrewModeState.BREWING
 
