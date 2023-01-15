@@ -40,7 +40,12 @@ async def handle_key_press(session, button, state):
     global last_start_press, last_select_press
     now = time.time()
 
-    if state != 'PRESSED':
+    if state == 'RELEASED':
+        if button == 'START':
+            last_start_press = None
+
+        if button == 'SELECT':
+            last_select_press = None
         return
 
     if button == 'START':
