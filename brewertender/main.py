@@ -90,7 +90,9 @@ START_SELECTION_TIMEOUT_SECS = 3.0
 START_BREW_TIMEOUT_SECS = 10.0
 CANCEL_TIMEOUT_SECS = 3.0
 
-last_move_press = time.time()
+HIGHEST_SECOND_PRESS_TIMEOUT = max(CANCEL_TIMEOUT_SECS, START_SELECTION_TIMEOUT_SECS)
+
+last_move_press = time.time() - HIGHEST_SECOND_PRESS_TIMEOUT
 brew_mode_state = BrewModeState.INACTIVE
 
 brew_task = None
@@ -132,7 +134,7 @@ async def handle_key_press(session, button, state):
     now = time.time()
     secs_since_selection_press = now - last_move_press
 
-    if state != 'RELEASED':
+    if state == 'RELEASED':
         return
 
     if button == 'MOVE':
@@ -154,6 +156,7 @@ async def handle_key_press(session, button, state):
 
             logger.info("Stopped brew finish")
             brew_mode_state = BrewModeState.INACTIVE
+            last_move_press = now - HIGHEST_SECOND_PRESS_TIMEOUT
             return
 
         if brew_mode_state is BrewModeState.INITIATING:
@@ -161,6 +164,7 @@ async def handle_key_press(session, button, state):
 
             logger.info("Cancelled selection")
             brew_mode_state = BrewModeState.INACTIVE
+            last_move_press = now - HIGHEST_SECOND_PRESS_TIMEOUT
             return
 
         if brew_mode_state is BrewModeState.BREWING:
@@ -177,6 +181,7 @@ async def handle_key_press(session, button, state):
 
             logger.info("Cancelled brew")
             brew_mode_state = BrewModeState.INACTIVE
+            last_move_press = now - HIGHEST_SECOND_PRESS_TIMEOUT
             return
 
         is_selection_second_press = secs_since_selection_press <= START_SELECTION_TIMEOUT_SECS
@@ -215,6 +220,7 @@ async def main():
         fetch_schema_from_transport=False
     )
     session = await client.connect_async(reconnecting=True)
+    logger.info("Connected to server")
 
     async for data in session.subscribe(gql_operations, operation_name="onButtonChange"):
         event = data['buttonChange']
