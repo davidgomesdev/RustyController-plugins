@@ -4,7 +4,10 @@ import time
 from asyncio import CancelledError
 from enum import Enum
 
+import backoff
 from gql import gql, Client
+from gql.client import ReconnectingAsyncClientSession
+from gql.transport.exceptions import TransportQueryError
 from gql.transport.websockets import WebsocketsTransport
 import json
 import os
@@ -210,6 +213,18 @@ async def handle_key_press(session, button, state):
         brew_task = asyncio.create_task(brew_tea(session, chosen_tea))
         brew_mode_state = BrewModeState.BREWING
 
+@backoff.on_exception(backoff.expo,
+                      Exception,
+                      max_value=5,
+                      giveup=lambda e: isinstance(e, TransportQueryError))
+async def subscribe_server(session: ReconnectingAsyncClientSession):
+    async for data in session.subscribe(gql_operations, operation_name="onButtonChange"):
+        event = data.get('buttonChangea')
+        if event is not None:
+            logger.debug("Received button change event...")
+            await handle_key_press(session, event['button'], event['state'])
+            logger.debug("Handled event")
+
 
 async def main():
     transport = WebsocketsTransport(url='ws://%s/subscriptions' % (os.environ.get("RUSTY_IP_PORT", "127.0.0.1:8080")),
@@ -219,12 +234,20 @@ async def main():
         transport=transport,
         fetch_schema_from_transport=False
     )
-    session = await client.connect_async(reconnecting=True)
+    retry_connect = backoff.on_exception(
+        backoff.fibo,
+        Exception,
+        max_value=3
+    )
+    retry_execute = backoff.on_exception(
+        backoff.constant,
+        Exception,
+        max_tries=5,
+        interval=0.1,
+        giveup=lambda e: isinstance(e, TransportQueryError),
+    )
+    session = await client.connect_async(reconnecting=True, retry_connect=retry_connect, retry_execute=retry_execute)
     logger.info("Connected to server")
-
-    async for data in session.subscribe(gql_operations, operation_name="onButtonChange"):
-        event = data['buttonChange']
-        await handle_key_press(session, event['button'], event['state'])
-
+    await subscribe_server(session)
 
 asyncio.run(main())
