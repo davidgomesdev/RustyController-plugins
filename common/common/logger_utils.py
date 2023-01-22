@@ -1,16 +1,8 @@
 import logging
 from logging.handlers import RotatingFileHandler
-import sys
-from types import TracebackType
-from typing import Type, Any
 
 # 5 MB
 _MAX_LOG_SIZE = 5 * 1024 * 1024
-
-
-def my_except_hook(exctype: Type[BaseException], value: BaseException, traceback: TracebackType | None) -> Any:
-    logging.critical(value, exc_info=True)
-    sys.__excepthook__(exctype, value, traceback)
 
 
 def setup_logger():
@@ -30,4 +22,3 @@ def setup_logger():
             logging.StreamHandler()
         ]
     )
-    sys.excepthook = my_except_hook
