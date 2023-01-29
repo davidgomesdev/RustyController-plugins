@@ -4,6 +4,7 @@ import logging
 import time
 from asyncio import CancelledError
 from enum import Enum
+from typing import Any
 
 from common.graphql_utils import subscribe_server, connect_graphql
 from common.logger_utils import setup_logger
@@ -12,10 +13,11 @@ from gql import gql
 
 class BrewModeState(Enum):
     INACTIVE = 1,
-    INITIATING = 2,
-    BREWING = 3,
-    BREWED = 4,
-    CANCELLING = 5
+    SELECTING = 2,
+    CONFIGURING = 3,
+    BREWING = 4,
+    BREWED = 5,
+    CANCELLING = 6
 
 
 setup_logger()
@@ -64,6 +66,14 @@ mutation WaitingForSelection {
     })
 }
 
+mutation ChangedConfiguration($duration: Int!) {
+    setRumbleBlink(
+        strength: 0.35,
+        interval: 500,
+        duration: $duration
+    )
+}
+
 mutation SelectionNotFound {
     setLedBlink(input: {
         hue: 0,
@@ -88,23 +98,24 @@ HIGHEST_SECOND_PRESS_TIMEOUT = max(CANCEL_TIMEOUT_SECS, START_SELECTION_TIMEOUT_
 last_move_press = time.time() - HIGHEST_SECOND_PRESS_TIMEOUT
 brew_mode_state = BrewModeState.INACTIVE
 
+chosen_tea: Any = None
+chosen_timing_index = 0
+
 brew_task = None
 
 with open('config.json', 'r') as teasFile:
     tea_config = json.load(teasFile)
 
 
-async def brew_tea(session, chosen_tea):
+async def brew_tea(session, tea, brew_time):
     global brew_task, brew_mode_state
 
-    color = chosen_tea['color']
-    timing_index = chosen_tea.get('common', 0)
-    brew_time = chosen_tea['timings'][timing_index]
+    color = tea['color']
 
     try:
         await session.execute(gql_operations, operation_name="BrewTea",
                               variable_values={
-                                  "name": chosen_tea['name'],
+                                  "name": tea['name'],
                                   "hue": color['hue'],
                                   "saturation": color['saturation'],
                                   "value": color['value'],
@@ -115,19 +126,43 @@ async def brew_tea(session, chosen_tea):
         logger.info("Brew task cancelled.")
         return
 
-    logger.info("Finished brew for '" + chosen_tea['name'] + "' tea")
+    logger.info("Finished brew for '" + tea['name'] + "' tea")
     await session.execute(gql_operations, operation_name="BrewFinished")
     brew_mode_state = BrewModeState.BREWED
     brew_task = None
 
 
 async def handle_key_press(session, button, state):
-    global last_move_press, brew_mode_state, brew_task
+    global last_move_press, brew_mode_state, brew_task, chosen_tea, chosen_timing_index
 
     now = time.time()
     secs_since_selection_press = now - last_move_press
 
     if state == 'RELEASED':
+        return
+
+    if button == 'START':
+        if brew_mode_state is BrewModeState.SELECTING:
+            timings = chosen_tea['timings']
+            brew_time = timings[chosen_timing_index % len(timings)]
+
+            logger.info("Starting brew task for '" + chosen_tea['name'] + "' tea")
+            brew_task = asyncio.create_task(brew_tea(session, chosen_tea, brew_time))
+            brew_mode_state = BrewModeState.BREWING
+
+        return
+
+    if button == 'SELECT':
+        if brew_mode_state is BrewModeState.CONFIGURING:
+            logger.info("Changing to next timing")
+            chosen_timing_index += 1
+
+            # 260 instead of 250, to make sure it blinks the intended times even if the server is slow
+            await session.execute(gql_operations, operation_name="ChangedConfiguration",
+                                  variable_values={
+                                      "duration": 260 * chosen_timing_index % len(chosen_tea['timings'])
+                                  })
+
         return
 
     if button == 'MOVE':
@@ -139,7 +174,7 @@ async def handle_key_press(session, button, state):
             brew_mode_state = BrewModeState.BREWING
             return
 
-        if brew_mode_state is BrewModeState.INITIATING and \
+        if brew_mode_state is BrewModeState.SELECTING and \
                 secs_since_selection_press > START_BREW_TIMEOUT_SECS:
             logger.debug("Selection timed out, handling as new")
             brew_mode_state = BrewModeState.INACTIVE
@@ -152,7 +187,7 @@ async def handle_key_press(session, button, state):
             last_move_press = now - HIGHEST_SECOND_PRESS_TIMEOUT
             return
 
-        if brew_mode_state is BrewModeState.INITIATING:
+        if brew_mode_state is BrewModeState.SELECTING:
             await session.execute(gql_operations, operation_name="CancelledStep")
 
             logger.info("Cancelled selection")
@@ -182,12 +217,12 @@ async def handle_key_press(session, button, state):
         if not is_selection_second_press:
             return
 
-        brew_mode_state = BrewModeState.INITIATING
+        brew_mode_state = BrewModeState.SELECTING
 
         await session.execute(gql_operations, operation_name="WaitingForSelection")
         logger.info("Waiting for selection...")
 
-    if brew_mode_state is BrewModeState.INITIATING and \
+    if brew_mode_state is BrewModeState.SELECTING and \
             button in ['CIRCLE', 'CROSS', 'TRIANGLE', 'SQUARE']:
         chosen_tea = tea_config.get(button.lower())
 
@@ -199,9 +234,10 @@ async def handle_key_press(session, button, state):
             brew_mode_state = BrewModeState.INACTIVE
             return
 
-        logger.info("Starting brew task for '" + chosen_tea['name'] + "' tea")
-        brew_task = asyncio.create_task(brew_tea(session, chosen_tea))
-        brew_mode_state = BrewModeState.BREWING
+        logger.info("Tea '" + chosen_tea['name'] + "' selected")
+        brew_mode_state = BrewModeState.CONFIGURING
+        chosen_timing_index = chosen_tea['common']
+        logger.debug("Entered configuration phase")
 
 
 async def event_handler(session, event):
