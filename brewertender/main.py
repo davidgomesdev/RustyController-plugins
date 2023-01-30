@@ -69,7 +69,7 @@ mutation WaitingForSelection {
 mutation ChangedConfiguration($duration: Int!) {
     setRumbleBlink(input: {
         strength: 0.35,
-        interval: 500,
+        interval: 250,
         duration: $duration
     })
 }
@@ -160,7 +160,7 @@ async def handle_key_press(session, button, state):
             # 260 instead of 250, to make sure it blinks the intended times even if the server is slow
             await session.execute(gql_operations, operation_name="ChangedConfiguration",
                                   variable_values={
-                                      "duration": 260 * chosen_timing_index % len(chosen_tea['timings'])
+                                      "duration": 260 * (chosen_timing_index % len(chosen_tea['timings']) + 1)
                                   })
 
         return
@@ -236,16 +236,14 @@ async def handle_key_press(session, button, state):
 
         logger.info("Tea '" + chosen_tea['name'] + "' selected")
         brew_mode_state = BrewModeState.CONFIGURING
-        chosen_timing_index = chosen_tea['common']
+        chosen_timing_index = chosen_tea.get('common', 0)
         logger.debug("Entered configuration phase")
 
 
 async def event_handler(session, event):
     btn_change = event.get('buttonChange')
     if btn_change is not None:
-        logger.debug("Received button change event...")
         await handle_key_press(session, btn_change['button'], btn_change['state'])
-        logger.debug("Handled event")
 
 
 async def main():
