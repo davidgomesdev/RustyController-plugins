@@ -67,11 +67,11 @@ mutation WaitingForSelection {
 }
 
 mutation ChangedConfiguration($duration: Int!) {
-    setRumbleBlink(
+    setRumbleBlink(input: {
         strength: 0.35,
         interval: 500,
         duration: $duration
-    )
+    })
 }
 
 mutation SelectionNotFound {
