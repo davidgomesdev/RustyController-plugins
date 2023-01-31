@@ -187,10 +187,10 @@ async def handle_key_press(session, button, state):
             last_move_press = now - HIGHEST_SECOND_PRESS_TIMEOUT
             return
 
-        if brew_mode_state is BrewModeState.SELECTING:
+        if brew_mode_state is BrewModeState.SELECTING or brew_mode_state is BrewModeState.CONFIGURING:
             await session.execute(gql_operations, operation_name="CancelledStep")
 
-            logger.info("Cancelled selection")
+            logger.info("Cancelled selection/configuration phase")
             brew_mode_state = BrewModeState.INACTIVE
             last_move_press = now - HIGHEST_SECOND_PRESS_TIMEOUT
             return
