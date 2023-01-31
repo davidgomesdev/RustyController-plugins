@@ -157,10 +157,9 @@ async def handle_key_press(session, button, state):
             logger.info("Changing to next timing")
             chosen_timing_index += 1
 
-            # 260 instead of 250, to make sure it blinks the intended times even if the server is slow
             await session.execute(gql_operations, operation_name="ChangedConfiguration",
                                   variable_values={
-                                      "duration": 260 * (chosen_timing_index % len(chosen_tea['timings']) + 1)
+                                      "duration": 250 * (chosen_timing_index % len(chosen_tea['timings']) + 1)
                                   })
 
         return
