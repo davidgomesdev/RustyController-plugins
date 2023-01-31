@@ -142,7 +142,7 @@ async def handle_key_press(session, button, state):
         return
 
     if button == 'START':
-        if brew_mode_state is BrewModeState.SELECTING:
+        if brew_mode_state is BrewModeState.CONFIGURING:
             timings = chosen_tea['timings']
             brew_time = timings[chosen_timing_index % len(timings)]
 
