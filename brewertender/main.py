@@ -61,8 +61,7 @@ mutation WaitingForSelection {
         saturation: 0.0,
         initialValue: 0.6,
         timeToPeak: 300,
-        peak: 0.8,
-        duration: 10000
+        peak: 0.8
     })
 }
 
