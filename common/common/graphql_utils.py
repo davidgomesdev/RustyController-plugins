@@ -1,9 +1,9 @@
 import os
-from typing import Any, Callable, Awaitable, Coroutine
+from typing import Any, Callable, Awaitable
 
 import backoff
 from gql.client import ReconnectingAsyncClientSession, Client, AsyncClientSession
-from gql.transport.exceptions import TransportQueryError, TransportProtocolError
+from gql.transport.exceptions import TransportClosed
 from gql.transport.websockets import WebsocketsTransport
 from graphql import DocumentNode
 
@@ -18,14 +18,14 @@ retry_execute = backoff.on_exception(
     Exception,
     max_tries=5,
     interval=0.1,
-    giveup=lambda e: isinstance(e, TransportQueryError),
+    giveup=lambda e: not (isinstance(e, TransportClosed)),
 )
 
 
 @backoff.on_exception(backoff.expo,
                       Exception,
                       max_value=5,
-                      giveup=lambda e: isinstance(e, TransportProtocolError))
+                      giveup=lambda e: not (isinstance(e, TransportClosed)))
 async def subscribe_server(
         session: ReconnectingAsyncClientSession,
         document: DocumentNode,
