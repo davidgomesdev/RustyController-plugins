@@ -41,6 +41,17 @@ mutation BrewTea($name: String!, $hue: Int!, $saturation: Float!, $value: Float!
     })
 }
 
+mutation TeaSelected($name: String!, $hue: Int!, $saturation: Float!, $value: Float!) {
+    setLedBreathing(input: {
+        name: $name,
+        hue: $hue,
+        saturation: $saturation,
+        initialValue: 0.0,
+        peak: $value,
+        timeToPeak: 300
+    })
+}
+
 mutation BrewFinished {
     setLedBreathing(input: {
         hue: 0,
@@ -233,8 +244,20 @@ async def handle_key_press(session, button, state):
             return
 
         logger.info("Tea '" + chosen_tea['name'] + "' selected")
+
+        color = chosen_tea['color']
+
+        await session.execute(gql_operations, operation_name="TeaSelected",
+                              variable_values={
+                                  "name": chosen_tea['name'],
+                                  "hue": color['hue'],
+                                  "saturation": color['saturation'],
+                                  "value": color['value']
+                              })
+
         brew_mode_state = BrewModeState.CONFIGURING
         chosen_timing_index = chosen_tea.get('common', 0)
+
         logger.debug("Entered configuration phase")
 
 
