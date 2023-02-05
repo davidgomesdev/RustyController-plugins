@@ -262,9 +262,8 @@ async def handle_key_press(session, button, state):
 
 
 async def event_handler(session, event):
-    btn_change = event.get('buttonChange')
-    if btn_change is not None:
-        await handle_key_press(session, btn_change['button'], btn_change['state'])
+    event = event['buttonChange']
+    await handle_key_press(session, event['button'], event['state'])
 
 
 async def main():

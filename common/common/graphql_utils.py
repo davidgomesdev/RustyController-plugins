@@ -37,9 +37,10 @@ async def subscribe_server(
 
 
 async def connect_graphql() -> ReconnectingAsyncClientSession | AsyncClientSession:
-    transport = WebsocketsTransport(url='ws://%s/subscriptions' % (os.environ.get("RUSTY_IP_PORT", "127.0.0.1:8080")),
-                                    connect_args={"ping_interval": None}
-                                    )
+    transport = WebsocketsTransport(
+        url='ws://%s/subscriptions' % (os.environ.get("RUSTY_IP_PORT", "127.0.0.1:8080")),
+        connect_args={"ping_interval": None}
+    )
     client = Client(
         transport=transport,
         fetch_schema_from_transport=False
