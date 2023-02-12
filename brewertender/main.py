@@ -52,17 +52,18 @@ mutation TeaSelected($name: String!, $hue: Int!, $saturation: Float!, $value: Fl
     })
 }
 
-mutation BrewFinished {
+mutation BrewFinished($timeout: Int!) {
     setLedBreathing(input: {
         hue: 0,
         saturation: 1.0,
         initialValue: 0.0,
         timeToPeak: 3000,
         peak: 0.3,
-        duration: 10000
+        duration: $timeout
     })
     setRumbleStatic(input: {
-        strength: 1.0
+        strength: 1.0,
+        duration: $timeout
     })
 }
 
@@ -99,9 +100,11 @@ mutation CancelledStep {
     setRumbleOff
 }
 """)
-START_SELECTION_TIMEOUT_SECS = 3.0
-START_BREW_TIMEOUT_SECS = 10.0
-CANCEL_TIMEOUT_SECS = 3.0
+
+START_SELECTION_TIMEOUT_SECS = 3
+START_BREW_TIMEOUT_SECS = 10
+CANCEL_TIMEOUT_SECS = 3
+ACKNOWLEDGE_BREW_TIMEOUT_SECS = 10
 
 HIGHEST_SECOND_PRESS_TIMEOUT = max(CANCEL_TIMEOUT_SECS, START_SELECTION_TIMEOUT_SECS)
 
@@ -112,13 +115,14 @@ chosen_tea: Any = None
 chosen_timing_index = 0
 
 brew_task = None
+finished_brew_at = 0
 
 with open('config.json', 'r') as teasFile:
     tea_config = json.load(teasFile)
 
 
 async def brew_tea(session, tea, brew_time):
-    global brew_task, brew_mode_state
+    global brew_task, brew_mode_state, finished_brew_at
 
     color = tea['color']
 
@@ -137,13 +141,17 @@ async def brew_tea(session, tea, brew_time):
         return
 
     logger.info("Finished brew for '" + tea['name'] + "' tea")
-    await session.execute(gql_operations, operation_name="BrewFinished")
+    await session.execute(gql_operations, operation_name="BrewFinished",
+                          variable_values={
+                              "timeout": ACKNOWLEDGE_BREW_TIMEOUT_SECS * 1_000
+                          })
     brew_mode_state = BrewModeState.BREWED
     brew_task = None
+    finished_brew_at = time.time()
 
 
 async def handle_key_press(session, button, state):
-    global last_move_press, brew_mode_state, brew_task, chosen_tea, chosen_timing_index
+    global last_move_press, brew_mode_state, brew_task, chosen_tea, chosen_timing_index, finished_brew_at
 
     now = time.time()
     secs_since_selection_press = now - last_move_press
@@ -189,12 +197,18 @@ async def handle_key_press(session, button, state):
             brew_mode_state = BrewModeState.INACTIVE
 
         if brew_mode_state is BrewModeState.BREWED:
-            await session.execute(gql_operations, operation_name="CancelledStep")
+            secs_since_brew = time.time() - finished_brew_at
 
-            logger.info("Stopped brew finish")
+            if secs_since_brew <= ACKNOWLEDGE_BREW_TIMEOUT_SECS:
+                await session.execute(gql_operations, operation_name="CancelledStep")
+
+                logger.info("Stopped brew finish")
+                brew_mode_state = BrewModeState.INACTIVE
+                last_move_press = now - HIGHEST_SECOND_PRESS_TIMEOUT
+                return
+
+            logger.debug("Got move press after the brew timed out, handling as a normal press...")
             brew_mode_state = BrewModeState.INACTIVE
-            last_move_press = now - HIGHEST_SECOND_PRESS_TIMEOUT
-            return
 
         if brew_mode_state is BrewModeState.SELECTING or brew_mode_state is BrewModeState.CONFIGURING:
             await session.execute(gql_operations, operation_name="CancelledStep")
