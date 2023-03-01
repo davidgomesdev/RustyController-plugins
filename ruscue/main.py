@@ -5,14 +5,9 @@ import time
 from common.graphql_utils import connect_graphql, subscribe_server
 from gql import gql
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("current.log"),
-        logging.StreamHandler()
-    ]
-)
+from common.logger_utils import setup_logger
+
+setup_logger()
 logger = logging.getLogger("ruscue")
 logger.setLevel(logging.DEBUG)
 
