@@ -33,3 +33,9 @@ In any step you can press the `Move` button to cancel the process.
 ### Ruscue
 
 Press `Start` and `Select` buttons simultaneously to set led and rumble off.
+
+### Stretchy
+
+Every 45 minutes sets the Led to indicate it's time to stretch.
+
+Any button click will reset the timer, and to set the Led off use Ruscue.
