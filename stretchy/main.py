@@ -72,6 +72,9 @@ async def run_timer(session: ReconnectingAsyncClientSession | AsyncClientSession
     global last_stretch_time, is_stretch_time
 
     while True:
+        if is_stretch_time:
+            await asyncio.sleep(1)
+
         is_in_schedule = False
 
         for time_range in EFFECTIVE_SCHEDULE:
@@ -86,7 +89,7 @@ async def run_timer(session: ReconnectingAsyncClientSession | AsyncClientSession
 
         minutes_since_last_stretch = (time.time() - last_stretch_time) / (1 if is_dev_mode else 60)
 
-        if not is_stretch_time and minutes_since_last_stretch >= STRETCH_INTERVAL_MINUTES:
+        if minutes_since_last_stretch >= STRETCH_INTERVAL_MINUTES:
             logger.info("Time to stretch!")
 
             try:
