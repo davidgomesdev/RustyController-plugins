@@ -44,4 +44,4 @@ Press `Start` and `Select` buttons simultaneously to set led and rumble off.
 
 Every 45 minutes sets the Led to indicate it's time to stretch.
 
-Any button click will reset the timer, and to set the Led off use Ruscue.
+Any button click will reset the timer and turn the led off (in case it is on).
