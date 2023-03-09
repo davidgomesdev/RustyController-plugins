@@ -12,7 +12,7 @@ The way it detects one as ad-hoc is by having a `.ad-hoc` on its directory.
 
 ### Pre-requisites
 
-Python 3 and venv.
+Python 3 and venv: `sudo apt-get install python3.11 python3.11-venv`.
 
 ### Rustea
 
