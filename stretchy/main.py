@@ -85,8 +85,8 @@ async def run_timer(session: ReconnectingAsyncClientSession | AsyncClientSession
 
         if not is_in_schedule:
             logger.debug("Not on schedule, sleeping for 15min")
-            await asyncio.sleep(15 * 60)
-            pass
+            await asyncio.sleep(15 * (1 if is_dev_mode else 60))
+            continue
 
         minutes_since_last_stretch = (time.time() - last_stretch_time) / (1 if is_dev_mode else 60)
 
