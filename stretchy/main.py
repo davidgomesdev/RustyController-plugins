@@ -74,6 +74,7 @@ async def run_timer(session: ReconnectingAsyncClientSession | AsyncClientSession
     while True:
         if is_stretch_time:
             await asyncio.sleep(1)
+            pass
 
         is_in_schedule = False
 
