@@ -42,7 +42,7 @@ subscription OnButtonChange {
 }
 """)
 
-EFFECTIVE_SCHEDULE = [(9, 12), (14, 18)]
+EFFECTIVE_SCHEDULE = [(10, 12), (14, 18)]
 STRETCH_INTERVAL_MINUTES = 5 if is_dev_mode else 45
 
 last_stretch_time = time.time()
@@ -84,6 +84,8 @@ async def run_timer(session: ReconnectingAsyncClientSession | AsyncClientSession
                 break
 
         if not is_in_schedule:
+            # Just so it doesn't immediately trigger when it's in schedule
+            last_stretch_time = time.time()
             logger.debug("Not on schedule, sleeping for 15min")
             await asyncio.sleep(15 * (1 if is_dev_mode else 60))
             continue
