@@ -42,7 +42,7 @@ subscription OnButtonChange {
 }
 """)
 
-EFFECTIVE_SCHEDULE = [(10, 12), (14, 18)]
+EFFECTIVE_SCHEDULE = [(10, 12), (14, 17)]
 STRETCH_INTERVAL_MINUTES = 5 if is_dev_mode else 45
 
 last_stretch_time = time.time()
