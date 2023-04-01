@@ -1,1 +1,2 @@
 python-graphql-client
+file:../common

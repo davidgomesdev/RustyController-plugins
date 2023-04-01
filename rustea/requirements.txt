@@ -1,1 +1,3 @@
 python-graphql-client
+file:../common
+pytimeparse==1.1.8

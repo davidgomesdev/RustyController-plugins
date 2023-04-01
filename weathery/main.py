@@ -1,9 +1,13 @@
 import json
 from datetime import datetime, timedelta
 from urllib import request
+
+from common.logger_utils import setup_logger
 from python_graphql_client import GraphqlClient
 
 from consts import *
+
+logger = setup_logger("weathery")
 
 wanted_date = (datetime.now() + timedelta(days=DAYS_FROM_TODAY))
 
@@ -22,14 +26,14 @@ if temp_info is None:
 temperature_id = temp_info["idTipoTempo"]
 effect = TEMP_ID_TO_HUE[temperature_id]
 
-print(f"Sending temperature effect '{effect['name']}' for ID '{temperature_id}'")
+logger.debug(f"Sending temperature effect '{effect['name']}' for ID '{temperature_id}'")
 
 client = GraphqlClient(endpoint="http://127.0.0.1:8080/graphql")
 
 res = client.execute(effect['mutation'])
 
 if "errors" in res or res['data']['setLedStatic'] != "SUCCESS":
-    print('Err! ' + str(res))
+    logger.error('Err! ' + str(res))
     exit(1)
 
-print('Sent temperature effect!')
+logger.info('Sent temperature effect!')
