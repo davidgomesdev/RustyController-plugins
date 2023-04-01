@@ -6,6 +6,7 @@ from asyncio import CancelledError
 from enum import Enum
 from typing import Any
 
+import pytimeparse
 from common.graphql_utils import subscribe_server, connect_graphql
 from common.logger_utils import setup_logger
 from gql import gql
@@ -125,17 +126,18 @@ async def brew_tea(session, tea, brew_time):
     global brew_task, brew_mode_state, finished_brew_at
 
     color = tea['color']
+    brew_time_secs = pytimeparse.parse(brew_time)
 
     try:
         await session.execute(gql_operations, operation_name="BrewTea",
                               variable_values={
-                                  "name": tea['name'],
+                                  "name": f'{tea["name"]}-{brew_time}',
                                   "hue": color['hue'],
                                   "saturation": color['saturation'],
                                   "value": color['value'],
-                                  "duration": brew_time * 1_000,
+                                  "duration": brew_time_secs * 1_000,
                               })
-        await asyncio.sleep(brew_time)
+        await asyncio.sleep(brew_time_secs)
     except CancelledError:
         logger.info("Brew task cancelled.")
         return
@@ -164,7 +166,7 @@ async def handle_key_press(session, button, state):
             timings = chosen_tea['timings']
             brew_time = timings[chosen_timing_index % len(timings)]
 
-            logger.info("Starting brew task for '" + chosen_tea['name'] + "' tea")
+            logger.info("Starting brew task of '" + chosen_tea['name'] + "' for '" + brew_time + "'")
             brew_task = asyncio.create_task(brew_tea(session, chosen_tea, brew_time))
             brew_mode_state = BrewModeState.BREWING
 

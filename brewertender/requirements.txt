@@ -1,5 +1,4 @@
 gql[all]
 asyncio
-../common
-
-backoff
+file:../common
+pytimeparse==1.1.8
