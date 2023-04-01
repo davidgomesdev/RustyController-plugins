@@ -1,4 +1,4 @@
 gql[all]
 asyncio
-file:../common
+../common
 pytimeparse==1.1.8

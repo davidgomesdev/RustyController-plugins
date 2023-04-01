@@ -6,6 +6,8 @@ Little scripts that use the [RustyController](https://github.com/LegendL3n/Rusty
 
 The [run-all.sh](run-all.sh) script runs all plugins that are not ad-hoc.
 
+The [run-ad-hoc.sh](run-ad-hoc.sh) script runs plugin that is ad-hoc. (takes the plugin name as arg)
+
 Such as [Weathery](#weathery), which is one-off plugin, intended to be run at a certain hour.
 
 The way it detects one as ad-hoc is by having a `.ad-hoc` on its directory. 
