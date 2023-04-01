@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import os
 import time
 
@@ -10,9 +9,7 @@ from common.logger_utils import setup_logger
 from gql.client import ReconnectingAsyncClientSession, AsyncClientSession
 from gql.transport.exceptions import TransportQueryError, TransportError
 
-setup_logger()
-logger = logging.getLogger("ruscue")
-logger.setLevel(logging.DEBUG)
+logger = setup_logger("stretchy")
 
 # Used to test schedule in seconds instead of minutes with a lower value
 is_dev_mode = os.environ.get("IS_DEV_MODE", "false").lower() == 'true'

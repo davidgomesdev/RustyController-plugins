@@ -1,6 +1,5 @@
 import asyncio
 import json
-import logging
 import time
 from asyncio import CancelledError
 from enum import Enum
@@ -21,9 +20,7 @@ class BrewModeState(Enum):
     CANCELLING = 6
 
 
-setup_logger()
-logger = logging.getLogger("brewertender")
-logger.setLevel(logging.DEBUG)
+logger = setup_logger("brewertender")
 
 gql_operations = gql("""
 subscription onButtonChange {

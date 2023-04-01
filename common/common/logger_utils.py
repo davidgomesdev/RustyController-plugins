@@ -1,13 +1,16 @@
 import logging
+import os
 from logging.handlers import RotatingFileHandler
 
 # 5 MB
 _MAX_LOG_SIZE = 5 * 1024 * 1024
 
+_DIRECTORY = os.environ.get('LOGS_DIRECTORY', '.')
 
-def setup_logger():
+
+def setup_logger(plugin_name) -> logging.Logger:
     log_handler = RotatingFileHandler(
-        filename='current.log',
+        filename=f'{_DIRECTORY}/{plugin_name}.log',
         mode='a',
         maxBytes=_MAX_LOG_SIZE,
         backupCount=2,
@@ -22,3 +25,8 @@ def setup_logger():
             logging.StreamHandler()
         ]
     )
+
+    logger = logging.getLogger(plugin_name)
+    logger.setLevel(logging.DEBUG)
+
+    return logger
