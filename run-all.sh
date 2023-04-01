@@ -13,7 +13,7 @@ tmux kill-session -t "RustyController plugins" 2>/dev/null && echo "Killed exist
 tmux new-session -d -s "RustyController plugins" -c "$(pwd)"
 
 BASE_DIR="$PWD"
-LOGS_BASE_DIRECTORY="/var/log/rusty-controller/plugins"
+LOGS_DIR="/var/log/rusty-controller/plugins"
 
 find . -mindepth 1 -maxdepth 1 -type d -print0 | while IFS= read -r -d '' dir
 do
@@ -29,13 +29,13 @@ do
       continue
     fi
 
-    LOGS_DIRECTORY="$LOGS_BASE_DIRECTORY/$plugin"
+    LOGS_DIR="$LOGS_DIR"
 
     echo "${INFO}Running $plugin$RESET"
 
-    mkdir -p "$LOGS_DIRECTORY"
+    mkdir -p "$LOGS_DIR"
 
-    python_command="python3 -m venv env && source env/bin/activate && pip install -r requirements.txt 1>/dev/null; LOGS_DIRECTORY='$LOGS_DIRECTORY'; python main.py || echo \"Failed running $plugin\""
+    python_command="python3 -m venv env && source env/bin/activate && pip install -r requirements.txt 1>/dev/null; LOGS_DIRECTORY='$LOGS_DIR'; python main.py || echo \"Failed running $plugin\""
     tmux new-window -t "RustyController plugins" -n "$plugin" "cd $wkdir && $python_command" && echo "${SUCCESS}Success.$RESET" || echo "${ERROR}Failed!$RESET"
   else
     echo "Ignoring $plugin folder (not a plugin)"

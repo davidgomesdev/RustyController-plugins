@@ -13,7 +13,7 @@ def setup_logger(plugin_name) -> logging.Logger:
         filename=f'{_DIRECTORY}/{plugin_name}.log',
         mode='a',
         maxBytes=_MAX_LOG_SIZE,
-        backupCount=2,
+        backupCount=0,
         encoding=None
     )
 
