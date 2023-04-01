@@ -35,7 +35,7 @@ do
 
     mkdir -p "$LOGS_DIR"
 
-    python_command="python3 -m venv env && source env/bin/activate && pip install -r requirements.txt 1>/dev/null; LOGS_DIRECTORY='$LOGS_DIR'; python main.py || echo \"Failed running $plugin\""
+    python_command="python3 -m venv env && source env/bin/activate && pip install -r requirements.txt 1>/dev/null; export LOGS_DIRECTORY='$LOGS_DIR'; python main.py || echo \"Failed running $plugin\""
     tmux new-window -t "RustyController plugins" -n "$plugin" "cd $wkdir && $python_command" && echo "${SUCCESS}Success.$RESET" || echo "${ERROR}Failed!$RESET"
   else
     echo "Ignoring $plugin folder (not a plugin)"
