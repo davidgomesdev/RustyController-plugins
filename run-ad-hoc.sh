@@ -9,7 +9,7 @@ LOGS_DIRECTORY="/var/log/rusty-controller/plugins/$1"
 
 plugin="$1"
 
-if [ -d "$plugin" ]; then
+if [ ! -d "$plugin" ]; then
   echo "${ERROR}The plugin '$plugin' does not exist!$RESET"
   exit 1
 fi
