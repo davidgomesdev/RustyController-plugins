@@ -9,10 +9,15 @@ LOGS_DIRECTORY="/var/log/rusty-controller/plugins/$1"
 
 plugin="$1"
 
-cd "$PLUGIN_NAME" || (echo "${ERROR}The plugin $plugin does not exist!$RESET"; exit 1)
+if [ -d "$plugin" ]; then
+  echo "${ERROR}The plugin '$plugin' does not exist!$RESET"
+  exit 1
+fi
+
+cd "$plugin" || exit 1
 
 if [ ! -f .ad-hoc ]; then
-  echo "${ERROR}The plugin $plugin is not ad-hoc!$RESET"
+  echo "${ERROR}The plugin '$plugin' is not ad-hoc!$RESET"
   exit 1
 fi
 
@@ -22,7 +27,7 @@ fi
 
 mkdir -p "$LOGS_DIRECTORY"
 
-echo "${INFO}Running $plugin...$RESET"
+echo "${INFO}Running '$plugin'...$RESET"
 
 LOGS_DIRECTORY="$LOGS_DIRECTORY"; python main.py
 
