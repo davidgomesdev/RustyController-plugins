@@ -5,7 +5,9 @@ SUCCESS=$(tput setaf 2)
 INFO=$(tput setaf 6)
 RESET=$(tput sgr0)
 
-LOGS_DIRECTORY="/var/log/rusty-controller/plugins/$1"
+LOGS_BASE_DIRECTORY="/var/log/rusty-controller/plugins"
+CRON_LOGS_DIRECTORY="$LOGS_BASE_DIRECTORY/cron"
+PLUGIN_LOGS_DIRECTORY="$LOGS_BASE_DIRECTORY/$1"
 
 plugin="$1"
 
@@ -21,14 +23,14 @@ if [ ! -f .ad-hoc ]; then
   exit 1
 fi
 
-{
-  (python3 -m venv env && source env/bin/activate && pip install -r requirements.txt) 2>&1
-} 1>/dev/null
+mkdir -p "$CRON_LOGS_DIRECTORY"
+mkdir -p "$PLUGIN_LOGS_DIRECTORY"
 
-mkdir -p "$LOGS_DIRECTORY"
+(python3 -m venv env && source env/bin/activate && pip install -r requirements.txt) >> "$CRON_LOGS_DIRECTORY/$plugin.log"
 
-echo "${INFO}Running '$plugin'...$RESET"
+echo "${INFO}Running '$plugin'...$RESET" >> "$CRON_LOGS_DIRECTORY/$plugin.log"
 
-LOGS_DIRECTORY="$LOGS_DIRECTORY"; python main.py
+export LOGS_DIRECTORY="$PLUGIN_LOGS_DIRECTORY"
+python main.py || (echo "${ERROR}Plugin failed! (check its logs)$RESET" >> "$CRON_LOGS_DIRECTORY/$plugin.log")
 
-echo "${SUCCESS}Plugin finished!$RESET"
+echo "${SUCCESS}Plugin finished!$RESET" >> "$CRON_LOGS_DIRECTORY/$plugin.log"
