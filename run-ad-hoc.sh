@@ -26,7 +26,7 @@ fi
 mkdir -p "$CRON_LOGS_DIRECTORY"
 mkdir -p "$PLUGIN_LOGS_DIRECTORY"
 
-(python3 -m venv env && source env/bin/activate && pip install -r requirements.txt) | tee "$CRON_LOGS_DIRECTORY/$plugin.log"
+python3 -m venv env && source env/bin/activate && pip install -r requirements.txt | tee "$CRON_LOGS_DIRECTORY/$plugin.log"
 
 echo "${INFO}Running '$plugin'...$RESET" | tee "$CRON_LOGS_DIRECTORY/$plugin.log"
 
