@@ -26,11 +26,11 @@ fi
 mkdir -p "$CRON_LOGS_DIRECTORY"
 mkdir -p "$PLUGIN_LOGS_DIRECTORY"
 
-(python3 -m venv env && source env/bin/activate && pip install -r requirements.txt) >> "$CRON_LOGS_DIRECTORY/$plugin.log"
+(python3 -m venv env && source env/bin/activate && pip install -r requirements.txt) | tee "$CRON_LOGS_DIRECTORY/$plugin.log"
 
-echo "${INFO}Running '$plugin'...$RESET" >> "$CRON_LOGS_DIRECTORY/$plugin.log"
+echo "${INFO}Running '$plugin'...$RESET" | tee "$CRON_LOGS_DIRECTORY/$plugin.log"
 
 export LOGS_DIRECTORY="$PLUGIN_LOGS_DIRECTORY"
-python main.py || (echo "${ERROR}Plugin failed! (check its logs)$RESET" >> "$CRON_LOGS_DIRECTORY/$plugin.log")
+python main.py || (echo "${ERROR}Plugin failed! (check its logs)$RESET" | tee "$CRON_LOGS_DIRECTORY/$plugin.log")
 
-echo "${SUCCESS}Plugin finished!$RESET" >> "$CRON_LOGS_DIRECTORY/$plugin.log"
+echo "${SUCCESS}Plugin finished!$RESET" | tee "$CRON_LOGS_DIRECTORY/$plugin.log"
