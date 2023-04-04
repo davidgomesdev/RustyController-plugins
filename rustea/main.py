@@ -31,7 +31,7 @@ choice = SystemRandom().choice(json['pool'])
 logger.info("Chose '" + choice['name'] + "'!")
 
 variables = choice
-variables['duration'] = pytimeparse.parse(duration)
+variables['duration'] = pytimeparse.parse(duration) * 1000
 
 res = client.execute(mutation, variables=variables)
 
