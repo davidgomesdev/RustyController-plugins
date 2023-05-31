@@ -32,7 +32,7 @@ mutation StartToStretch {
 }
 
 mutation StretchFinished {
-    setLedOff
+    revertLed
 }
 
 subscription OnButtonChange {
