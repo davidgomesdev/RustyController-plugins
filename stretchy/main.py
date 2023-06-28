@@ -21,7 +21,7 @@ mutation StartToStretch {
   setLedBreathing(
     input: {
       name: "stretchy-startStretch"
-      hue: 0
+      hue: 108
       saturation: 1.0
       initialValue: 0.0
       timeToPeak: 1000
