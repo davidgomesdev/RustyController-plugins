@@ -35,4 +35,4 @@ echo "${INFO} --- Running... --- $RESET" | tee -a "$CRON_LOGS_DIRECTORY/$plugin.
 export LOGS_DIRECTORY="$PLUGIN_LOGS_DIRECTORY"
 (python main.py 2>&1 1>/dev/null || echo "${ERROR}* Plugin failed! *$RESET") | tee -a "$CRON_LOGS_DIRECTORY/$plugin.log"
 
-echo "${INFO} --- Plugin completed --- $RESET" | tee -a "$CRON_LOGS_DIRECTORY/$plugin.log"
+echo "${SUCCESS} --- Plugin completed --- $RESET" | tee -a "$CRON_LOGS_DIRECTORY/$plugin.log"
