@@ -35,8 +35,9 @@ find . -mindepth 1 -maxdepth 1 -type d -print0 | while IFS= read -r -d '' dir; d
 
     mkdir -p "$LOGS_DIR"
 
-    install_requirements_command="python3 -m venv env && source env/bin/activate && pip install -r requirements.txt 1>/dev/null; pip install --no-cache-dir --upgrade --force-reinstall --no-deps ../common/dist/common-1.0-py3-none-any.whl"
-    python_command="export LOGS_DIRECTORY='$LOGS_DIR'; python3 main.py 2>&1 1>/dev/null > '$LOGS_DIR/$plugin.log' || echo 'Failed running $plugin'"
+    install_common_wheel_command="pip install --no-cache-dir --upgrade --force-reinstall --no-deps ../common/dist/common-1.0-py3-none-any.whl 2>'$LOGS_DIR/$plugin.log' 1>/dev/null"
+    install_requirements_command="python3 -m venv env && source env/bin/activate && pip install -r requirements.txt 2>'$LOGS_DIR/$plugin.log' 1>/dev/null; $install_common_wheel_command"
+    python_command="export LOGS_DIRECTORY='$LOGS_DIR'; python3 main.py 2>'$LOGS_DIR/$plugin.log' 1>/dev/null || echo 'Failed running $plugin'"
     tmux new-window -t "RustyController plugins" -n "$plugin" "cd $wkdir && ($install_requirements_command; $python_command)" && echo "${SUCCESS}Success.$RESET" || echo "${ERROR}Failed!$RESET"
   else
     echo "Ignoring $plugin folder (not a plugin)"
