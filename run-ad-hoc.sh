@@ -16,6 +16,9 @@ if [ ! -d "$plugin" ]; then
   exit 1
 fi
 
+# Don't fail if the current common build fails, there may be a previous build
+(./build_common.sh)
+
 cd "$plugin" || exit 1
 
 if [ ! -f .ad-hoc ]; then
