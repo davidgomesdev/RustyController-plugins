@@ -1,2 +1,1 @@
 gql[all]
-../common/dist/common-1.0-py3-none-any.whl

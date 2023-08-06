@@ -32,6 +32,7 @@ mkdir -p "$PLUGIN_LOGS_DIRECTORY"
 echo "${INFO} --- Installing dependencies... --- $RESET" | tee -a "$CRON_LOGS_DIRECTORY/$plugin.log"
 
 python3 -m venv env && source env/bin/activate && pip install -r requirements.txt 2>&1 1>/dev/null | tee -a "$CRON_LOGS_DIRECTORY/$plugin.log"
+pip install --upgrade --force-reinstall --no-deps ../common/dist/common-1.0-py3-none-any.whl
 
 echo "${INFO} --- Running... --- $RESET" | tee -a "$CRON_LOGS_DIRECTORY/$plugin.log"
 
