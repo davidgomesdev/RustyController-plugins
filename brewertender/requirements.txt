@@ -1,4 +1,3 @@
 gql[all]
 asyncio
-../common/dist/common-1.0-py3-none-any.whl
 pytimeparse==1.1.8
