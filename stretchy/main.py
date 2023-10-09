@@ -43,7 +43,7 @@ subscription OnButtonChange {
 """ % STRETCH_ACK_TIMEOUT)
 
 EFFECTIVE_SCHEDULE = [(10, 12), (14, 19)]
-STRETCH_INTERVAL_MINUTES = 5 if is_dev_mode else 30
+STRETCH_INTERVAL_MINUTES = 5 if is_dev_mode else int(os.environ.get("STRETCH_INTERVAL", "60"))
 
 last_stretch_time = time.time()
 is_stretch_time = False
