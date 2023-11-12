@@ -62,11 +62,7 @@ async def event_handler(session, _event):
             await session.execute(gql_operations, operation_name="StretchFinished")
         except TransportError | TransportQueryError as e:
             logger.error("Error in StartToStretch mutation", e, exc_info=True)
-    else:
-        # Avoids resetting the 5 minutes delay
-        if last_stretch_time < time.time():
-            last_stretch_time = time.time()
-            logger.info("An event received, stretch timer reset")
+
 
 async def run_timer(session: ReconnectingAsyncClientSession | AsyncClientSession):
     global last_stretch_time, is_stretch_time
