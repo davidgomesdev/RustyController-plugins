@@ -68,10 +68,6 @@ async def run_timer(session: ReconnectingAsyncClientSession | AsyncClientSession
     global last_stretch_time, is_stretch_time
 
     while True:
-        if is_stretch_time:
-            await asyncio.sleep(1)
-            continue
-
         is_in_schedule = False
 
         for time_range in EFFECTIVE_SCHEDULE:
@@ -82,8 +78,15 @@ async def run_timer(session: ReconnectingAsyncClientSession | AsyncClientSession
         if not is_in_schedule:
             # Just so it doesn't immediately trigger when it's in schedule
             last_stretch_time = time.time()
+
+            is_stretch_time = False
+
             logger.debug("Not on schedule, sleeping for 15min")
             await asyncio.sleep(15 * (1 if is_dev_mode else 60))
+            continue
+
+        if is_stretch_time:
+            await asyncio.sleep(60)
             continue
 
         minutes_since_last_stretch = (time.time() - last_stretch_time) / (1 if is_dev_mode else 60)
@@ -100,6 +103,7 @@ async def run_timer(session: ReconnectingAsyncClientSession | AsyncClientSession
 
         await asyncio.sleep(1)
 
+
 async def main():
     if is_dev_mode:
         logger.warning("Running in Dev Mode")
@@ -107,7 +111,7 @@ async def main():
     session = await connect_graphql()
     logger.info("Connected to server")
 
-    asyncio.create_task(run_timer(session))
+    await asyncio.create_task(run_timer(session))
 
     await subscribe_server(session, gql_operations,operation_name="OnButtonChange", event_handler=event_handler)
 
