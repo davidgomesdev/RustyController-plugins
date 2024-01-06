@@ -111,8 +111,9 @@ async def main():
     session = await connect_graphql()
     logger.info("Connected to server")
 
-    await asyncio.create_task(run_timer(session))
+    task = asyncio.create_task(run_timer(session))
 
-    await subscribe_server(session, gql_operations,operation_name="OnButtonChange", event_handler=event_handler)
+    await subscribe_server(session, gql_operations, operation_name="OnButtonChange", event_handler=event_handler)
+    await task
 
 asyncio.run(main())
