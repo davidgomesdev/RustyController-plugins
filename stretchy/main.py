@@ -113,6 +113,6 @@ async def main():
 
     await asyncio.create_task(run_timer(session))
 
-    await subscribe_server(session, gql_operations,operation_name="buttonChange", event_handler=event_handler)
+    await subscribe_server(session, gql_operations,operation_name="OnButtonChange", event_handler=event_handler)
 
 asyncio.run(main())
