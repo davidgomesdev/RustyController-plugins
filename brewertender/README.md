@@ -6,7 +6,7 @@ Create a `config.json` file with the following structure:
 
 ```json
 {
-  "button": {
+  "<button>": {
     "name": "white",
     "timings": [
       60,

@@ -16,15 +16,15 @@ if [ ! -d "$plugin" ]; then
   exit 1
 fi
 
+# Don't fail if the current common build fails, there may be a previous build
+(./build_common.sh)
+
 cd "$plugin" || exit 1
 
 if [ ! -f .ad-hoc ]; then
   echo "${ERROR}The plugin '$plugin' is not ad-hoc!$RESET" >> "$LOGS_BASE_DIRECTORY/run-ad-hoc.log"
   exit 1
 fi
-
-# Don't fail if the current common build fails, there may be a previous build
-(../build_common.sh)
 
 mkdir -p "$CRON_LOGS_DIRECTORY"
 mkdir -p "$PLUGIN_LOGS_DIRECTORY"
