@@ -24,7 +24,7 @@ if [ ! -f .ad-hoc ]; then
 fi
 
 # Don't fail if the current common build fails, there may be a previous build
-(./build_common.sh)
+(../build_common.sh)
 
 mkdir -p "$CRON_LOGS_DIRECTORY"
 mkdir -p "$PLUGIN_LOGS_DIRECTORY"
