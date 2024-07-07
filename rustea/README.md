@@ -6,7 +6,7 @@ Create a `teas.json` file with a Json as such:
 
 ```json
 {
-  "duration": "60", # this is in seconds, hint: https://www.inchcalculator.com/convert/minute-to-second/
+  "duration": "30m", # https://pypi.org/project/pytimeparse/
   "pool": [
     {
       "name": "white",
