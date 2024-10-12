@@ -1,3 +1,4 @@
+import os
 from effect import EFFECT_BY_TEMP
 
 # Taken from https://www.ipma.pt/bin/file.data/weathertypes.json
