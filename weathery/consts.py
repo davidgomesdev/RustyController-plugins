@@ -66,8 +66,8 @@ TEMP_ID_TO_HUE = {
     30: EFFECT_BY_TEMP["SNOW"],
 }
 
-# Lisbon ID
+# Default is Lisbon ID
 # Taken from https://api.ipma.pt/public-data/forecast/locations.json
-LOCATION_ID = 1110600
+LOCATION_ID = os.environ.get('LOCATION_ID', 1110600)
 API_URL = "https://api.ipma.pt/public-data/forecast/aggregate"
 DAYS_FROM_TODAY = 1
