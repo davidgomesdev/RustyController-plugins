@@ -1,0 +1,5 @@
+openwakeword
+numpy<2.0
+argparse
+pyaudio
+gql[all]
