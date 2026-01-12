@@ -14,7 +14,7 @@ logger = setup_logger("stretchy")
 # Used to test schedule in seconds instead of minutes with a lower value
 is_dev_mode = os.environ.get("IS_DEV_MODE", "false").lower() == 'true'
 
-STRETCH_ACK_TIMEOUT = 15 * (1 if is_dev_mode else 60) * 1000
+STRETCH_ACK_TIMEOUT = 5 * (1 if is_dev_mode else 60) * 1000
 
 gql_operations = gql("""
 mutation StartToStretch {
@@ -43,7 +43,7 @@ subscription OnButtonChange {
 """ % STRETCH_ACK_TIMEOUT)
 
 EFFECTIVE_SCHEDULE = [(10, 12), (14, 17)]
-STRETCH_INTERVAL_MINUTES = 5 if is_dev_mode else int(os.environ.get("STRETCH_INTERVAL", "30"))
+STRETCH_INTERVAL_MINUTES = 5 if is_dev_mode else int(os.environ.get("STRETCH_INTERVAL", "60"))
 
 last_stretch_time = time.time()
 is_stretch_time = False
